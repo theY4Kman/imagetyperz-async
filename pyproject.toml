@@ -1,0 +1,30 @@
+[tool.poetry]
+name = 'imagetyperz-async'
+version = '0.1.0'
+description = 'Asynchronous client for the ImageTyperz API'
+authors = ['Zach "theY4Kman" Kanzler <they4kman@gmail.com>']
+keywords = ['imagetyperz', 'captcha']
+license = 'MIT'
+readme = 'README.md'
+homepage = "https://github.com/theY4Kman/imagetyperz-async"
+classifiers = [
+    'Development Status :: 4 - Beta',
+    'Intended Audience :: Developers',
+    'Intended Audience :: Information Technology',
+    'Topic :: Internet :: WWW/HTTP',
+]
+packages = [
+    { include = 'imagetyperz' },
+    { include = 'LICENSE', format = 'sdist' },
+    { include = 'CHANGELOG.md', format = 'sdist' },
+]
+
+[tool.poetry.dependencies]
+python = '^3.6'
+httpx = '>=0.15.0'
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ['poetry-core>=1.0.0']
+build-backend = 'poetry.core.masonry.api'
