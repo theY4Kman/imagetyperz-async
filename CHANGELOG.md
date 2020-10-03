@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 
 ## [Unreleased]
+### Added
+ - Allow usage as async contextmanager to automatically close httpx session
 
 
 ## [0.1.0] - 2020-10-02
