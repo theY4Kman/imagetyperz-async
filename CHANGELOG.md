@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 
 ## [Unreleased]
+
+
+## [0.3.1] — 2021-11-21
 ### Fixed
  - DOC: Fix note in README about only supporting reCAPTCHAs (image CAPTCHAs are now also supported)
 
