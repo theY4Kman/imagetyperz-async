@@ -4,7 +4,7 @@ An asynchronous client for the [ImageTyperz CAPTCHA-solving API](http://imagetyp
 
 [httpx](https://github.com/encode/httpx) powers the HTTP requests.
 
-**At the moment, only reCAPTCHAs are supported.**
+**At the moment, only image CAPTCHAS and reCAPTCHAs are supported.**
 
 
 # Installation
