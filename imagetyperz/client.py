@@ -6,8 +6,9 @@ API Docs: https://www.imagetyperz.com/Forms/api/api.html
 Additional docs: https://github.com/imagetyperz-api/API-docs
 """
 import asyncio
+from base64 import b64encode
 from datetime import datetime
-from typing import Union
+from typing import BinaryIO, Optional, Union
 
 import httpx
 
@@ -78,6 +79,91 @@ class ImageTyperzClient:
         self._raise_on_error(res, 'Error retrieving account balance')
 
         return float(res.text)
+
+    async def complete_image(
+        self, *,
+        file: BinaryIO = None,
+        b64_contents: Union[str, bytes] = None,
+        image_url: str = None,
+        is_case_sensitive: bool = False,
+        is_math: bool = False,
+        is_phrase: bool = False,
+        is_digits_only: bool = False,
+        is_letters_only: bool = False,
+        min_length: Optional[int] = None,
+        max_length: Optional[int] = None,
+    ) -> str:
+        """Solve an image-based CAPTCHA
+
+        :param file:
+            A file-like object holding the image data
+
+        :param b64_contents:
+            The base64 representation of the image data
+
+        :param image_url:
+            The URL to the CAPTCHA image to solve
+
+        :param is_case_sensitive:
+            Whether the CAPTCHA answer is case-sensitive
+
+        :param is_math:
+            Whether the CAPTCHA contains a math expression to calculate the solution of
+
+        :param is_phrase:
+            Whether the CAPTCHA includes at least one space
+
+        :param is_digits_only:
+            Whether the CAPTCHA consists entirely of numerical digits
+
+        :param is_letters_only:
+            Whether the CAPTCHA consists entirely of letters
+
+        :param min_length:
+            The minimum length of the CAPTCHA answer
+
+        :param max_length:
+            The maximum length of the CAPTCHA answer
+        """
+        if not (file or b64_contents or image_url):
+            raise ValueError('Please specify one of file, b64_contents, or image_url.')
+
+        if is_digits_only and is_letters_only:
+            raise ValueError('Only one of is_digits_only or is_letters_only may be specified.')
+
+        image_data: Union[str, bytes]
+        if image_url:
+            endpoint = self.Endpoints.CAPTCHA_URL
+            image_data = image_url
+        else:
+            endpoint = self.Endpoints.CAPTCHA_CONTENT
+            if file:
+                image_data = b64encode(file.read())
+            else:
+                image_data = b64_contents
+
+        data = {
+            'action': 'UPLOADCAPTCHA',
+            'file': image_data,
+            'iscase': is_case_sensitive or None,
+            'isphrase': is_phrase or None,
+            'ismath': is_math or None,
+            'alphanumeric': '1' if is_digits_only else '2' if is_letters_only else None,
+            'minlength': min_length,
+            'maxlength': max_length,
+        }
+        data = {
+            k: v
+            for k, v in data.items()
+            if v is not None
+        }
+
+        self.log.trace('Solving image CAPTCHA: %s', data)
+        res = await self.session.post(url=endpoint, data=data)
+        self._raise_on_error(res, 'Error solving image CAPTCHA')
+
+        captcha_id, answer = res.text.split('|', maxsplit=1)
+        return answer
 
     async def submit_recaptcha(
         self, *,
