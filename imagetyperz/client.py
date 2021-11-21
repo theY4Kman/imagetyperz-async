@@ -11,6 +11,7 @@ from datetime import datetime
 from typing import BinaryIO, Optional, Union
 
 import httpx
+from httpx._types import TimeoutTypes
 
 from .auth import TokenDataAuth
 from .constants import reCAPTCHAType
@@ -39,10 +40,10 @@ class ImageTyperzClient:
         PROXY_CHECK = 'http://captchatypers.com/captchaAPI/GetReCaptchaTextTokenJSON.ashx'
         GEETEST_SUBMIT = 'http://captchatypers.com/captchaapi/UploadGeeTestToken.ashx'
 
-    def __init__(self, access_token):
+    def __init__(self, access_token, *, timeout: TimeoutTypes = 60.0):
         self._access_token = access_token
 
-        self.session = httpx.AsyncClient(auth=TokenDataAuth(self._access_token))
+        self.session = httpx.AsyncClient(auth=TokenDataAuth(self._access_token), timeout=timeout)
 
     async def __aenter__(self):
         await self.session.__aenter__()
