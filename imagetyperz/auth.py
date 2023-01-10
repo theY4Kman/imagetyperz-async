@@ -28,7 +28,11 @@ class TokenDataAuth(httpx.Auth):
         yield request
 
     def add_token_to_post_body(self, request: httpx.Request):
-        data = dict(parse_qsl(request.content))
+        content = request.content
+        if isinstance(content, bytes):
+            content = content.decode()
+
+        data = dict(parse_qsl(content))
         data['token'] = self.access_token
         headers, request.stream = encode_request(data=data)
 

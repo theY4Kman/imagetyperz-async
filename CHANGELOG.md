@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 
 ## [Unreleased]
+### Fixed
+ - Resolve `INVALID_REQUEST` with newer versions of httpx, as our auth class improperly handled bytestrings when adding the access token to requests, resulting in url-encoded `b'stuff'`
 
 
 ## [0.3.1] — 2021-11-21
